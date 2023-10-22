@@ -5,7 +5,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
    // Set a global route prefix here
-   app.setGlobalPrefix('api'); // This will add "/api" to all routes
+   app.setGlobalPrefix('bal'); // This will add "/api" to all routes
   await app.listen(3003);
   console.log("DB Connected...");
 }
