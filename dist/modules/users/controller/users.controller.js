@@ -37,19 +37,39 @@ let UsersController = class UsersController {
     }
     async getBalance(blockchainName, validatorAddress) {
         const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
-        const query = `{
-          ethereum(network: ${blockchainName}) {
-            address(address: {is: "${validatorAddress}"}) {
-              balances {
-                currency {
-                  address
-                  symbol
+        let query;
+        if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
+            query = `{
+                ethereum(network: ${blockchainName}) {
+                    address(address: {is: "${validatorAddress}"}) {
+                        balances {
+                            currency {
+                                address
+                                symbol
+                            }
+                            value
+                        }
+                    }
                 }
-                value
-              }
-            }
-          }
-        }`;
+            }`;
+        }
+        else if (blockchainName === 'stellar') {
+            console.log("This is stellar blockchain....");
+            query = `{
+                stellar(network: ${blockchainName}) {
+                    address(address: {is: "${validatorAddress}"}) {
+                        tokenBalances {
+                            assetCode
+                            balance
+                            assetIssuer
+                        }
+                    }
+                }
+            }`;
+        }
+        else {
+            throw new common_1.HttpException('Invalid blockchain name', common_1.HttpStatus.BAD_REQUEST);
+        }
         try {
             const response = await axios_1.default.post('https://graphql.bitquery.io/', {
                 query: query,
@@ -59,6 +79,7 @@ let UsersController = class UsersController {
                     'X-API-KEY': apiKey,
                 },
             });
+            console.log("🚀 ~ file: users.controller.ts:84 ~ UsersController ~ response:", response.data);
             return response.data;
         }
         catch (error) {
