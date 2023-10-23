@@ -45,14 +45,14 @@ export class UsersController {
     @Get('/balance')
     async getBalance(
         @Query('blockchainName') blockchainName: string,
-        @Query('validatorAddress') validatorAddress: string,
+        @Query('validatorAddress') userAddress: string,
     ) {
         const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
         let query;
         if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
             query = `{
                 ethereum(network: ${blockchainName}) {
-                    address(address: {is: "${validatorAddress}"}) {
+                    address(address: {is: "${userAddress}"}) {
                         balances {
                             currency {
                                 address
@@ -67,7 +67,7 @@ export class UsersController {
             console.log("This is stellar blockchain....");
             query = `{
                 stellar(network: ${blockchainName}) {
-                    address(address: {is: "${validatorAddress}"}) {
+                    address(address: {is: "${userAddress}"}) {
                         tokenBalances {
                             assetCode
                             balance
