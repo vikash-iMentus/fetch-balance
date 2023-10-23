@@ -24,15 +24,20 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     async createUser(password, username) {
-        console.log("🚀 ~ file: users.controller.ts:18 ~ UsersController ~ apiKey:");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(username)) {
+            throw new common_1.BadRequestException('Invalid email format. Please provide a valid email address.');
+        }
+        const existingUser = await this.usersService.getUser(username);
+        if (existingUser) {
+            throw new common_1.BadRequestException('User already registered. Please use a different email address.');
+        }
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-        console.log("🚀 ~ file: users.controller.ts:20 ~ UsersController ~ hashedPassword:", hashedPassword);
         const users = new user_entity_1.UserEntity();
         users.username = username;
         users.password = hashedPassword;
         const result = await this.usersService.createUser(users);
-        console.log("🚀 ~ file: users.controller.ts:22 ~ UsersController ~ result:", result);
         return result.id;
     }
     async getBalance(blockchainName, validatorAddress) {

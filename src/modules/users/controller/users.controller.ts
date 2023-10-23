@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Param, Headers, UnauthorizedException, Query, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, Headers, UnauthorizedException, Query, UseGuards, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 // import { User } from './users.model';
 import { UserEntity } from '../entity/user.entity';
@@ -17,19 +17,27 @@ export class UsersController {
         @Body('password') password: string,
         @Body('username') username: string,
     ) {
-        console.log("🚀 ~ file: users.controller.ts:18 ~ UsersController ~ apiKey:")
+        // Validate the email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(username)) {
+            throw new BadRequestException('Invalid email format. Please provide a valid email address.');
+        }
+
+        const existingUser = await this.usersService.getUser(username);
+        // Check if the user already exists
+        //const existingUser = await this.usersService.getUser({ username });
+        if (existingUser) {
+            throw new BadRequestException('User already registered. Please use a different email address.');
+        }
 
         const saltOrRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-        console.log("🚀 ~ file: users.controller.ts:20 ~ UsersController ~ hashedPassword:", hashedPassword)
 
         const users = new UserEntity();
         users.username = username;
         users.password = hashedPassword;
-        //users.api_key = apiKey;
 
         const result = await this.usersService.createUser(users);
-        console.log("🚀 ~ file: users.controller.ts:22 ~ UsersController ~ result:", result)
         return result.id;
     }
 
