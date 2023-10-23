@@ -45,7 +45,7 @@ export class UsersController {
     @Get('/balance')
     async getBalance(
         @Query('blockchainName') blockchainName: string,
-        @Query('validatorAddress') userAddress: string,
+        @Query('userAddress') userAddress: string,
     ) {
         const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
         let query;
