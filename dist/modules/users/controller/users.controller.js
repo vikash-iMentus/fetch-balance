@@ -40,13 +40,13 @@ let UsersController = class UsersController {
         const result = await this.usersService.createUser(users);
         return result.id;
     }
-    async getBalance(blockchainName, validatorAddress) {
+    async getBalance(blockchainName, userAddress) {
         const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
         let query;
         if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
             query = `{
                 ethereum(network: ${blockchainName}) {
-                    address(address: {is: "${validatorAddress}"}) {
+                    address(address: {is: "${userAddress}"}) {
                         balances {
                             currency {
                                 address
@@ -62,7 +62,7 @@ let UsersController = class UsersController {
             console.log("This is stellar blockchain....");
             query = `{
                 stellar(network: ${blockchainName}) {
-                    address(address: {is: "${validatorAddress}"}) {
+                    address(address: {is: "${userAddress}"}) {
                         tokenBalances {
                             assetCode
                             balance
@@ -99,6 +99,60 @@ let UsersController = class UsersController {
             }
         }
     }
+    async getBalances(queryData) {
+        const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
+        const responses = [];
+        for (const queryItem of queryData) {
+            let query;
+            const { blockchain, address } = queryItem;
+            if (blockchain === 'ethereum' || blockchain === 'bsc') {
+                query = `{
+                    ethereum(network: ${blockchain}) {
+                        address(address: {is: "${address}"}) {
+                            balances {
+                                currency {
+                                    address
+                                    symbol
+                                }
+                                value
+                            }
+                        }
+                    }
+                }`;
+            }
+            else if (blockchain === 'stellar') {
+                query = `{
+                    stellar(network: stellar) {
+                        address(address: {is: "${address}"}) {
+                            tokenBalances {
+                                assetCode
+                                balance
+                                assetIssuer
+                            }
+                        }
+                    }
+                }`;
+            }
+            else {
+                throw new common_1.HttpException('Invalid blockchain name', common_1.HttpStatus.BAD_REQUEST);
+            }
+            try {
+                const response = await axios_1.default.post('https://graphql.bitquery.io/', {
+                    query: query,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': apiKey,
+                    },
+                });
+                responses.push(response.data);
+            }
+            catch (error) {
+                responses.push({ error: `Error fetching data for ${blockchain}` });
+            }
+        }
+        return responses;
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -112,11 +166,19 @@ __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.Get)('/balance'),
     __param(0, (0, common_1.Query)('blockchainName')),
-    __param(1, (0, common_1.Query)('validatorAddress')),
+    __param(1, (0, common_1.Query)('userAddress')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getBalance", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Post)('/blockchain/data'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getBalances", null);
 UsersController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

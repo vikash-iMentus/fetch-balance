@@ -3,5 +3,9 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     createUser(password: string, username: string): Promise<number>;
-    getBalance(blockchainName: string, validatorAddress: string): Promise<any>;
+    getBalance(blockchainName: string, userAddress: string): Promise<any>;
+    getBalances(queryData: {
+        blockchain: string;
+        address: string;
+    }[]): Promise<any[]>;
 }

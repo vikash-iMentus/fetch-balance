@@ -103,6 +103,65 @@ export class UsersController {
             }
         }
     }
+
+    @UseGuards(AuthGuard)
+    @Post('/blockchain/data')
+    async getBalances(@Body() queryData: { blockchain: string; address: string }[]) {
+        const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
+        const responses = [];
+
+        for (const queryItem of queryData) {
+            let query;
+            const { blockchain, address } = queryItem;
+
+            if (blockchain === 'ethereum' || blockchain === 'bsc') {
+                query = `{
+                    ethereum(network: ${blockchain}) {
+                        address(address: {is: "${address}"}) {
+                            balances {
+                                currency {
+                                    address
+                                    symbol
+                                }
+                                value
+                            }
+                        }
+                    }
+                }`;
+            } else if (blockchain === 'stellar') {
+                query = `{
+                    stellar(network: stellar) {
+                        address(address: {is: "${address}"}) {
+                            tokenBalances {
+                                assetCode
+                                balance
+                                assetIssuer
+                            }
+                        }
+                    }
+                }`;
+            } else {
+                throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+            }
+
+            try {
+                const response = await axios.post('https://graphql.bitquery.io/', {
+                    query: query,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': apiKey,
+                    },
+                });
+
+                responses.push(response.data);
+            } catch (error) {
+                responses.push({ error: `Error fetching data for ${blockchain}` });
+            }
+        }
+
+        return responses;
+    }
    
    
     // @Get('/balance')
