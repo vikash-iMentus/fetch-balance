@@ -1,0 +1,297 @@
+{
+	"info": {
+		"_postman_id": "3c8b1d37-3754-4013-b68c-c9775247a46b",
+		"name": "fetchBalOfMultiBlockchains",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22546921"
+	},
+	"item": [
+		{
+			"name": "userRegisterX",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"virat@gmail.com\",\n    \"password\":\"12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demo.shipping.xqutus.com/bal/auth/signup",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"shipping",
+						"xqutus",
+						"com"
+					],
+					"path": [
+						"bal",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userLoginX",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"virat@gmail.com\",\n    \"password\":\"12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demo.shipping.xqutus.com/bal/auth/login",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"shipping",
+						"xqutus",
+						"com"
+					],
+					"path": [
+						"bal",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBalanceX",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpcmF0QGdtYWlsLmNvbSIsInN1YiI6MiwiaWF0IjoxNjk4MTU2ODk2LCJleHAiOjE2OTgxNzg0OTZ9.5uIysu-bvj2PHWXSfn3MMTTNPnBY6gHsfygfKiITJWw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demo.shipping.xqutus.com/bal/auth/balance?blockchainName=ethereum&userAddress=0x1425844319d9a7a375c8f0d05c528948ca2fe3ce",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"shipping",
+						"xqutus",
+						"com"
+					],
+					"path": [
+						"bal",
+						"auth",
+						"balance"
+					],
+					"query": [
+						{
+							"key": "blockchainName",
+							"value": "ethereum"
+						},
+						{
+							"key": "userAddress",
+							"value": "0x1425844319d9a7a375c8f0d05c528948ca2fe3ce"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "postBlockchainDataX",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpcmF0QGdtYWlsLmNvbSIsInN1YiI6MiwiaWF0IjoxNjk4MTU2ODk2LCJleHAiOjE2OTgxNzg0OTZ9.5uIysu-bvj2PHWXSfn3MMTTNPnBY6gHsfygfKiITJWw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\"blockchain\": \"stellar\", \"address\": \"GALZ3N7DS3NV2W4AIVNXX2ALWLHMGD5SEPJ6IK7VEUA67SRA2XBAITFB\"},\n    {\"blockchain\": \"ethereum\", \"address\": \"0x1425844319d9a7a375c8f0d05c528948ca2fe3ce\"},\n    {\"blockchain\": \"bsc\", \"address\": \"0x1425844319d9a7a375c8f0d05c528948ca2fe3ce\"}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://demo.shipping.xqutus.com/bal/auth/blockchain/data",
+					"protocol": "https",
+					"host": [
+						"demo",
+						"shipping",
+						"xqutus",
+						"com"
+					],
+					"path": [
+						"bal",
+						"auth",
+						"blockchain",
+						"data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userRegisterLocal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"shree@gmail.com\",\n    \"password\":\"12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/tokenService/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"tokenService",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserLoginLocal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"shree@gmail.com\",\n    \"password\":\"12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/tokenService/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"tokenService",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetBalanceLocal",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNocmVlQGdtYWlsLmNvbSIsInN1YiI6OSwiaWF0IjoxNjk4MjE3NDE2LCJleHAiOjE2OTgyMzkwMTZ9.kNITk7D5SKqjgY08Bwe0wNniSq_cMWZAWOAtNuomRF4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3003/tokenService/balance?blockchainName=stellar&userAddress=GALZ3N7DS3NV2W4AIVNXX2ALWLHMGD5SEPJ6IK7VEUA67SRA2XBAITFB",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"tokenService",
+						"balance"
+					],
+					"query": [
+						{
+							"key": "blockchainName",
+							"value": "stellar"
+						},
+						{
+							"key": "userAddress",
+							"value": "GALZ3N7DS3NV2W4AIVNXX2ALWLHMGD5SEPJ6IK7VEUA67SRA2XBAITFB"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PostBlockchainDataLocal",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNocmVlQGdtYWlsLmNvbSIsInN1YiI6OSwiaWF0IjoxNjk4MjE3NDE2LCJleHAiOjE2OTgyMzkwMTZ9.kNITk7D5SKqjgY08Bwe0wNniSq_cMWZAWOAtNuomRF4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\"blockchain\": \"stellar\", \"address\": \"GALZ3N7DS3NV2W4AIVNXX2ALWLHMGD5SEPJ6IK7VEUA67SRA2XBAITFB\"},\n    {\"blockchain\": \"ethereum\", \"address\": \"0x1425844319d9a7a375c8f0d05c528948ca2fe3ce\"},\n    {\"blockchain\": \"bsc\", \"address\": \"0x1425844319d9a7a375c8f0d05c528948ca2fe3ce\"}\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3003/tokenService/multiChainBalances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3003",
+					"path": [
+						"tokenService",
+						"multiChainBalances"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

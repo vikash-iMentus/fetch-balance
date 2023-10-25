@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import axios from 'axios';
 import { AuthGuard } from '../../authentication/auth.guard';
 
-@Controller('auth')
+@Controller('')
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
@@ -101,7 +101,7 @@ export class UsersController {
     }
 
     @UseGuards(AuthGuard)
-    @Post('/blockchain/data')
+    @Post('/multiChainBalances')
     async getBalances(@Body() queryData: { blockchain: string; address: string }[]) {
         const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
         const responses = [];
