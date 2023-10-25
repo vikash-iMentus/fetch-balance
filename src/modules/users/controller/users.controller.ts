@@ -1,20 +1,20 @@
 import { Body, Controller, Post, Get, Param, Headers, UnauthorizedException, Query, UseGuards, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-import { AuthGuard } from '../../authentication/auth.guard';
+//import { AuthGuard } from '../../authentication/auth.guard';
 
 @Controller('')
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
    
-    @Post('/signup')
-    async createUser(
-        @Body('password') password: string,
-        @Body('username') username: string,
-    ) {
-        return await this.usersService.createUser(username, password);
-    }
+    // @Post('/signup')
+    // async createUser(
+    //     @Body('password') password: string,
+    //     @Body('username') username: string,
+    // ) {
+    //     return await this.usersService.createUser(username, password);
+    // }
 
-    @UseGuards(AuthGuard)
+    //@UseGuards(AuthGuard)
     @Get('/balance')
     async getBalance(
         @Query('blockchainName') blockchainName: string,
@@ -23,7 +23,7 @@ export class UsersController {
         return await this.usersService.getBalance(blockchainName, userAddress);
     }
 
-    @UseGuards(AuthGuard)
+    //@UseGuards(AuthGuard)
     @Post('/multiChainBalances')
     async getBalances(@Body() queryData: { blockchain: string; address: string }[]) {
         return await this.usersService.getBalances(queryData);

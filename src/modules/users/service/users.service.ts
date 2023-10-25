@@ -1,5 +1,5 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UserEntity } from '../entity/user.entity';
+//import { UserEntity } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,41 +7,40 @@ import axios from 'axios';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(UserEntity)
-      private userRepository: Repository<UserEntity>) { }
+    constructor() { }
 
-    async createUser(username: string, password: string): Promise<number> {
-      try {
-          // Validate the email format
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(username)) {
-              throw new BadRequestException('Invalid email format. Please provide a valid email address.');
-          }
+  //   async createUser(username: string, password: string): Promise<number> {
+  //     try {
+  //         // Validate the email format
+  //         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //         if (!emailRegex.test(username)) {
+  //             throw new BadRequestException('Invalid email format. Please provide a valid email address.');
+  //         }
 
-          const existingUser = await this.getUser(username);
-          // Check if the user already exists
-          if (existingUser) {
-              throw new BadRequestException('User already registered. Please use a different email address.');
-          }
+  //         const existingUser = await this.getUser(username);
+  //         // Check if the user already exists
+  //         if (existingUser) {
+  //             throw new BadRequestException('User already registered. Please use a different email address.');
+  //         }
 
-          const saltOrRounds = 10;
-          const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+  //         const saltOrRounds = 10;
+  //         const hashedPassword = await bcrypt.hash(password, saltOrRounds);
 
-          const user = new UserEntity();
-          user.username = username;
-          user.password = hashedPassword;
+  //         const user = new UserEntity();
+  //         user.username = username;
+  //         user.password = hashedPassword;
 
-          const addedUser = await this.userRepository.save(user);
-          return addedUser.id;
+  //         const addedUser = await this.userRepository.save(user);
+  //         return addedUser.id;
 
-      } catch (error) {
-          throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-      }
-  }
+  //     } catch (error) {
+  //         throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+  //     }
+  // }
 
-    async getUser(username: string): Promise<UserEntity> {
-      return this.userRepository.findOne({ where: { username } });
-  }
+  //   async getUser(username: string): Promise<UserEntity> {
+  //     return this.userRepository.findOne({ where: { username } });
+  // }
 
 
   async getBalance(blockchainName: string, userAddress: string) {
