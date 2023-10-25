@@ -1,12 +1,9 @@
 import { Body, Controller, Post, Get, Param, Headers, UnauthorizedException, Query, UseGuards, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
-// import { User } from './users.model';
 import { UserEntity } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import axios from 'axios';
 import { AuthGuard } from '../../authentication/auth.guard';
-//import { Sep30Service } from '../sep30/services/sep30.service';
-
 
 @Controller('auth')
 export class UsersController {
@@ -25,7 +22,6 @@ export class UsersController {
 
         const existingUser = await this.usersService.getUser(username);
         // Check if the user already exists
-        //const existingUser = await this.usersService.getUser({ username });
         if (existingUser) {
             throw new BadRequestException('User already registered. Please use a different email address.');
         }
@@ -163,47 +159,4 @@ export class UsersController {
         return responses;
     }
    
-   
-    // @Get('/balance')
-    // async getBalance(
-    //     @Query('blockchainName') blockchainName: string,
-    //     @Query('validatorAddress') validatorAddress: string,
-    // ) {
-    //     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
-    //     const query = `{
-    //       ethereum(network: ${blockchainName}) {
-    //         address(address: {is: "${validatorAddress}"}) {
-    //           balances {
-    //             currency {
-    //               address
-    //               symbol
-    //             }
-    //             value
-    //           }
-    //         }
-    //       }
-    //     }`;
-
-    //     try {
-    //         const response = await axios.post('https://graphql.bitquery.io/', {
-    //             query: query,
-    //         }, {
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'X-API-KEY': apiKey,
-    //             },
-    //         });
-
-    //         return response.data;
-    //     } catch (error) {
-    //         // Handle specific error cases or return a generic error message
-    //         if (error.response) {
-    //             throw new HttpException('Bitquery API Error', HttpStatus.SERVICE_UNAVAILABLE);
-    //         } else if (error.request) {
-    //             throw new HttpException('Request Error', HttpStatus.SERVICE_UNAVAILABLE);
-    //         } else {
-    //             throw new HttpException('Unknown Error', HttpStatus.SERVICE_UNAVAILABLE);
-    //         }
-    //     }
-    // }
 }
