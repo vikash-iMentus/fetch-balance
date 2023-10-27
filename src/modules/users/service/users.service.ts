@@ -42,8 +42,7 @@ export class UsersService {
     async getUser(username: string): Promise<UserEntity> {
       return this.userRepository.findOne({ where: { username } });
   }
-
-
+  
   async getBalance(blockchainName: string, userAddress: string) {
     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
     let query;
@@ -99,6 +98,208 @@ export class UsersService {
         }
     }
 }
+
+
+async getBalanceSameOp(blockchainName: string, userAddress: string) {
+    const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
+    let query;
+    if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
+        console.log("Inside the getBalance L50...",blockchainName)
+        query = `{
+            ethereum(network: ${blockchainName}) {
+                address(address: {is: "${userAddress}"}) {
+                    tokenBalances: balances {
+                        assetCode: currency {
+                            symbol
+                        }
+                        balance: value
+                        assetIssuer: currency {
+                            address
+                        }
+                    }
+                }
+            }
+        }`;
+        console.log("🚀 ~ file: users.service.ts:66 ~ UsersService ~ getBalance ~ query:", query)
+    } else if (blockchainName === 'stellar') {
+        console.log("This is stellar blockchain....");
+        query = `{
+            stellar(network: ${blockchainName}) {
+                address(address: {is: "${userAddress}"}) {
+                    tokenBalances {
+                        assetCode
+                        balance
+                        assetIssuer
+                    }
+                }
+            }
+        }`;
+    } else {
+        throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+        const response = await axios.post('https://graphql.bitquery.io/', {
+            query: query,
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-KEY': apiKey,
+            },
+        });
+       // console.log("🚀 ~ file: users.service.ts:92 ~ UsersService ~ getBalance ~ response:", JSON.stringify(response.data.data))
+
+        if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
+            const transformedResponse = {
+                [blockchainName]: {
+                    address: response.data.data["ethereum"].address.map(item => {
+                        return {
+                            tokenBalances: item.tokenBalances.map(balanceItem => {
+                                return {
+                                    assetCode: balanceItem.assetCode.symbol,
+                                    balance: balanceItem.balance,
+                                    assetIssuer: balanceItem.assetIssuer.address
+                                };
+                            })
+                        };
+                    })
+                }
+            };
+            return transformedResponse;
+        
+        
+        } else if (blockchainName === 'stellar') {
+            // Add transformation logic for Stellar if needed
+            return response.data;
+        }
+    } catch (error) {
+        if (error.response) {
+            console.error('Bitquery API Error:', error.response.data);
+            throw new HttpException('Bitquery API Error', HttpStatus.SERVICE_UNAVAILABLE);
+        } else if (error.request) {
+            console.error('Request Error:', error.request);
+            throw new HttpException('Request Error', HttpStatus.SERVICE_UNAVAILABLE);
+        } else {
+            console.error('Unknown Error:', error.message);
+            throw new HttpException('Unknown Error', HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+}
+
+async getMultiChainBalancesSameOp(queryData: { blockchain: string; address: string }[]) {
+    const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
+    const responses = [];
+
+    for (const queryItem of queryData) {
+        let query;
+        const { blockchain, address } = queryItem;
+
+        if (blockchain === 'ethereum') {
+            query = `{
+                ethereum(network: ${blockchain}) {
+                    address(address: {is: "${address}"}) {
+                        balances {
+                            currency {
+                                address
+                                symbol
+                            }
+                            value
+                        }
+                    }
+                }
+            }`;
+        } else if (blockchain === 'bsc') {
+            query = `{
+                ethereum(network: ${blockchain}) {
+                    address(address: {is: "${address}"}) {
+                        balances {
+                            currency {
+                                address
+                                symbol
+                            }
+                            value
+                        }
+                    }
+                }
+            }`;
+        } else if (blockchain === 'stellar') {
+            query = `{
+                ${blockchain}(network: ${blockchain}) {
+                    address(address: {is: "${address}"}) {
+                        tokenBalances {
+                            assetCode
+                            balance
+                            assetIssuer
+                        }
+                    }
+                }
+            }`;
+        } else {
+            throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            const response = await axios.post('https://graphql.bitquery.io/', {
+                query: query,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-KEY': apiKey,
+                },
+            });
+
+            if (response.data.data[blockchain] || response.data.data["ethereum"] ) {
+                if (blockchain === 'ethereum' || blockchain === 'bsc') {
+                    const network = blockchain === 'ethereum' ? 'ethereum' : 'bsc';
+                    console.log("🚀 ~ file: users.service.ts:254 ~ UsersService ~ getMultiChainBalancesSameOp ~ network:", network)
+                    const transformedResponse = {
+                        [blockchain]: {
+                            address: response.data.data["ethereum"].address.map(item => {
+                                return {
+                                    tokenBalances: item.balances.map(balanceItem => {
+                                        return {
+                                            assetCode: balanceItem.currency.symbol,
+                                            balance: balanceItem.value,
+                                            assetIssuer: balanceItem.currency.address
+                                        };
+                                    })
+                                };
+                            })
+                        }
+                    };
+                    responses.push(transformedResponse);
+                } else if (blockchain === 'stellar') {
+                    const transformedResponse = {
+                        [blockchain]: {
+                            address: response.data.data[blockchain].address.map(item => {
+                                return {
+                                    tokenBalances: item.tokenBalances.map(balanceItem => {
+                                        return {
+                                            assetCode: balanceItem.assetCode,
+                                            balance: balanceItem.balance,
+                                            assetIssuer: balanceItem.assetIssuer
+                                        };
+                                    })
+                                };
+                            })
+                        }
+                    };
+                    responses.push(transformedResponse);
+                }
+            } else {
+                responses.push({ error: `No data found for ${blockchain}` });
+            }
+        } catch (error) {
+            responses.push({ error: `Error fetching data for ${blockchain}` });
+        }
+    }
+
+    return responses;
+}
+
+
+
+
 
 async getBalances(queryData: { blockchain: string; address: string }[]) {
     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
