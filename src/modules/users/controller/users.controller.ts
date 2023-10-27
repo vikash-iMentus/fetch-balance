@@ -29,7 +29,7 @@ export class UsersController {
         return await this.usersService.getBalances(queryData);
     }
 
-   // @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @Get('/balanceSameOutput')
     async getBalanceSameOp(
         @Query('blockchainName') blockchainName: string,
@@ -38,6 +38,7 @@ export class UsersController {
         return await this.usersService.getBalanceSameOp(blockchainName, userAddress);
     }
 
+    @UseGuards(AuthGuard)
     @Post('/multiChainBalancesSampOutput')
     async getBalancesSameOp(@Body() queryData: { blockchain: string; address: string }[]) {
         return await this.usersService.getMultiChainBalancesSameOp(queryData);
