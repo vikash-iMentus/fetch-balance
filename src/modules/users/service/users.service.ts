@@ -74,7 +74,7 @@ export class UsersService {
             }
         }`;
     } else {
-        throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+        throw new Error('Invalid blockchain name');
     }
 
     try {
@@ -135,7 +135,7 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
             }
         }`;
     } else {
-        throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+        throw new Error('Invalid blockchain name');
     }
 
     try {
@@ -186,6 +186,8 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
     }
 }
 
+
+
 async getMultiChainBalancesSameOp(queryData: { blockchain: string; address: string }[]) {
     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
     const responses = [];
@@ -235,7 +237,7 @@ async getMultiChainBalancesSameOp(queryData: { blockchain: string; address: stri
                 }
             }`;
         } else {
-            throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+            throw new Error('Invalid blockchain name');
         }
 
         try {
@@ -336,7 +338,7 @@ async getBalances(queryData: { blockchain: string; address: string }[]) {
                 }
             }`;
         } else {
-            throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
+            throw new Error('Invalid blockchain name');
         }
 
         try {
