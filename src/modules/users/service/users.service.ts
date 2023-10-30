@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
+import { response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -223,7 +224,8 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
             }
         }`;
     } else {
-        return { error: 'Invalid blockchain name' };
+        throw new Error('Invalid blockchain name');
+        
     }
 
     try {
