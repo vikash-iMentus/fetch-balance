@@ -101,99 +101,11 @@ export class UsersService {
 }
 
 
-// async getBalanceSameOp(blockchainName: string, userAddress: string) {
-//     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
-//     let query;
-//     if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
-//         console.log("Inside the getBalance L50...",blockchainName)
-//         query = `{
-//             ethereum(network: ${blockchainName}) {
-//                 address(address: {is: "${userAddress}"}) {
-//                     tokenBalances: balances {
-//                         assetCode: currency {
-//                             symbol
-//                         }
-//                         balance: value
-//                         assetIssuer: currency {
-//                             address
-//                         }
-//                     }
-//                 }
-//             }
-//         }`;
-//         console.log("🚀 ~ file: users.service.ts:66 ~ UsersService ~ getBalance ~ query:", query)
-//     } else if (blockchainName === 'stellar') {
-//         console.log("This is stellar blockchain....");
-//         query = `{
-//             stellar(network: ${blockchainName}) {
-//                 address(address: {is: "${userAddress}"}) {
-//                     tokenBalances {
-//                         assetCode
-//                         balance
-//                         assetIssuer
-//                     }
-//                 }
-//             }
-//         }`;
-//     } else {
-//         return new Error('Invalid blockchain name');
-//     }
-
-//     try {
-//         const response = await axios.post('https://graphql.bitquery.io/', {
-//             query: query,
-//         }, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'X-API-KEY': apiKey,
-//             },
-//         });
-//        // console.log("🚀 ~ file: users.service.ts:92 ~ UsersService ~ getBalance ~ response:", JSON.stringify(response.data.data))
-
-//         if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
-//             const transformedResponse = {
-//                 [blockchainName]: {
-//                     address: response.data.data["ethereum"].address.map(item => {
-//                         return {
-//                             tokenBalances: item.tokenBalances.map(balanceItem => {
-//                                 return {
-//                                     assetCode: balanceItem.assetCode.symbol,
-//                                     balance: balanceItem.balance,
-//                                     assetIssuer: balanceItem.assetIssuer.address
-//                                 };
-//                             })
-//                         };
-//                     })
-//                 }
-//             };
-//             console.log("Line 168 transformedResponse:", transformedResponse.error);
-//             return transformedResponse;
-        
-        
-//         } else if (blockchainName === 'stellar') {
-//             // Add transformation logic for Stellar if needed
-//             return response.data;
-//         }
-//     } catch (error) {
-//         if (error.response) {
-//             console.error('Bitquery API Error:', error.response.data);
-//             throw new HttpException('Bitquery API Error', HttpStatus.SERVICE_UNAVAILABLE);
-//         } else if (error.request) {
-//             console.error('Request Error:', error.request);
-//             throw new HttpException('Request Error', HttpStatus.SERVICE_UNAVAILABLE);
-//         } else {
-//             console.error('Unknown Error:', error.message);
-//             throw new HttpException('Unknown Error', HttpStatus.SERVICE_UNAVAILABLE);
-//         }
-//     }
-// }
-
-
 async getBalanceSameOp(blockchainName: string, userAddress: string) {
     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
     let query;
     if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
-        console.log("Inside the getBalance L50...", blockchainName);
+        console.log("Inside the getBalance L50...",blockchainName)
         query = `{
             ethereum(network: ${blockchainName}) {
                 address(address: {is: "${userAddress}"}) {
@@ -209,7 +121,7 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
                 }
             }
         }`;
-        console.log("🚀 ~ file: users.service.ts:66 ~ UsersService ~ getBalance ~ query:", query);
+        console.log("🚀 ~ file: users.service.ts:66 ~ UsersService ~ getBalance ~ query:", query)
     } else if (blockchainName === 'stellar') {
         console.log("This is stellar blockchain....");
         query = `{
@@ -225,7 +137,6 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
         }`;
     } else {
         throw new Error('Invalid blockchain name');
-        
     }
 
     try {
@@ -237,11 +148,12 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
                 'X-API-KEY': apiKey,
             },
         });
+       // console.log("🚀 ~ file: users.service.ts:92 ~ UsersService ~ getBalance ~ response:", JSON.stringify(response.data.data))
 
         if (blockchainName === 'ethereum' || blockchainName === 'bsc') {
             const transformedResponse = {
                 [blockchainName]: {
-                    address: response.data.data[blockchainName].address.map(item => {
+                    address: response.data.data["ethereum"].address.map(item => {
                         return {
                             tokenBalances: item.tokenBalances.map(balanceItem => {
                                 return {
@@ -256,9 +168,11 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
             };
             console.log("Line 168 transformedResponse:", transformedResponse.error);
             return transformedResponse;
+        
+        
         } else if (blockchainName === 'stellar') {
             // Add transformation logic for Stellar if needed
-            return { data: response.data };
+            return response.data;
         }
     } catch (error) {
         if (error.response) {
