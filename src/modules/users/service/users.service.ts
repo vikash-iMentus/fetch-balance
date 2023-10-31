@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { response } from 'express';
 
 @Injectable()
 export class UsersService {
@@ -75,7 +74,7 @@ export class UsersService {
             }
         }`;
     } else {
-        throw new Error('Invalid blockchain name');
+        throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -136,7 +135,7 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
             }
         }`;
     } else {
-        throw new Error('Invalid blockchain name');
+        throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
     }
 
     try {
@@ -166,7 +165,6 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
                     })
                 }
             };
-            console.log("Line 168 transformedResponse:", transformedResponse.error);
             return transformedResponse;
         
         
@@ -177,18 +175,16 @@ async getBalanceSameOp(blockchainName: string, userAddress: string) {
     } catch (error) {
         if (error.response) {
             console.error('Bitquery API Error:', error.response.data);
-            return { error: 'Bitquery API Error' };
+            throw new HttpException('Bitquery API Error', HttpStatus.SERVICE_UNAVAILABLE);
         } else if (error.request) {
             console.error('Request Error:', error.request);
-            return { error: 'Request Error' };
+            throw new HttpException('Request Error', HttpStatus.SERVICE_UNAVAILABLE);
         } else {
             console.error('Unknown Error:', error.message);
-            return { error: 'Unknown Error' };
+            throw new HttpException('Unknown Error', HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 }
-
-
 
 async getMultiChainBalancesSameOp(queryData: { blockchain: string; address: string }[]) {
     const apiKey = 'BQY9iuQV2O8y3v1Crf8EomLpfitYqcbg';
@@ -239,7 +235,7 @@ async getMultiChainBalancesSameOp(queryData: { blockchain: string; address: stri
                 }
             }`;
         } else {
-            throw new Error('Invalid blockchain name');
+            throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -340,7 +336,7 @@ async getBalances(queryData: { blockchain: string; address: string }[]) {
                 }
             }`;
         } else {
-            throw new Error('Invalid blockchain name');
+            throw new HttpException('Invalid blockchain name', HttpStatus.BAD_REQUEST);
         }
 
         try {
